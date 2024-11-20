@@ -1,27 +1,17 @@
 stages:
-  - build
-  - push
+  - build_and_push
 
 variables:
-  IMAGE_NAME: "registry.gitlab.com/hadil9775947/backend" # Replace with your actual namespace/project
+  IMAGE_NAME: "registry.gitlab.com/hadil9775947/backend"
 
-build_image:
-  stage: build
+build_and_push_image:
+  stage: build_and_push
   image: docker:latest
   services:
     - docker:dind
   script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
     - docker build -t $IMAGE_NAME:latest .
-    - docker images
-
-push_image:
-  stage: push
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
     - docker push $IMAGE_NAME:latest
-  needs:
-    - build_image
+  only:
+    - main
