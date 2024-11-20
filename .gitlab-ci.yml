@@ -26,3 +26,4 @@ push_image:
     - docker push $IMAGE_NAME:latest
   needs:
     - build_image
+
