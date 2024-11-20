@@ -5,14 +5,17 @@ stages:
 variables:
   IMAGE_NAME: "registry.gitlab.com/hadil9775947/backend"
 
+# Stage 1: Build the Docker image
 build_image:
   stage: build
   image: docker:latest
   services:
     - docker:dind
   script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
     - docker build -t $IMAGE_NAME:latest .
 
+# Stage 2: Push the Docker image to the GitLab Container Registry
 push_image:
   stage: push
   image: docker:latest
