@@ -13,7 +13,10 @@ build_image:
     - docker:dind
   script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
-    - docker build -t $IMAGE_NAME:latest .
+    - ls -la # Check for necessary files
+    - cat Dockerfile # Verify Dockerfile content
+    - docker build --progress=plain -t $IMAGE_NAME:latest .
+    - docker images | grep "$IMAGE_NAME" # Verify the image is built
 
 # Stage 2: Push the Docker image to the GitLab Container Registry
 push_image:
@@ -23,7 +26,7 @@ push_image:
     - docker:dind
   script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
+    - docker images # Debug: list all images
     - docker push $IMAGE_NAME:latest
   needs:
     - build_image
-
