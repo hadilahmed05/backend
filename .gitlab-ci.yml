@@ -12,12 +12,10 @@ build_image:
     - docker:dind
   script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
-    - echo "Checking for Dockerfile and project files:"
-    - ls -la
-    - echo "Building the Docker image:"
-    - docker build --progress=plain -t $IMAGE_NAME:latest .
-    - echo "Listing Docker images after build:"
-    - docker images
+    - docker build -t $IMAGE_NAME:latest .
+    - docker push $IMAGE_NAME:latest # Push immediately after build
+  only:
+    - main
 
 push_image:
   stage: push
@@ -26,8 +24,9 @@ push_image:
     - docker:dind
   script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" $CI_REGISTRY --password-stdin
-    - echo "Listing Docker images before push:"
-    - docker images
-    - docker push $IMAGE_NAME:latest
+    - docker pull $IMAGE_NAME:latest # Pull the image for validation or further use
+    - docker push $IMAGE_NAME:latest # Push again (optional, if necessary)
   needs:
     - build_image
+  only:
+    - main
