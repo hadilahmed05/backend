@@ -3,7 +3,7 @@ stages:
   - push
 
 variables:
-  IMAGE_NAME: "registry.gitlab.com/<namespace>/<project>" # Replace with your actual namespace/project
+  IMAGE_NAME: "registry.gitlab.com/hadil9775947/backend" # Replace with your actual namespace/project
 
 build_image:
   stage: build
