@@ -5,9 +5,8 @@ services:
 
 stages:
   - build
+  - push
 
-variables:
-  DOCKER_DRIVER: overlay2
 
 before_script:
   # Authenticate to the GitLab Container Registry
@@ -16,5 +15,13 @@ before_script:
 build_image:
   stage: build
   script:
+    # Build the Docker image and tag it
     - docker build -t $CI_REGISTRY_IMAGE:latest .
+    # Ensure the image is available for the next stage
+    - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:latest
+
+push_image:
+  stage: push
+  script:
+    # Push the previously built image to the registry
     - docker push $CI_REGISTRY_IMAGE:latest
