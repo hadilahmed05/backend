@@ -1,7 +1,9 @@
-
-FROM node:14
+FROM node:20-alpine as base
 WORKDIR /usr/src/app
-COPY . .
+COPY package*.json ./
+
+FROM base as development
 RUN npm install
+COPY . .
 EXPOSE 8080
-CMD ["npm", "start"]
+CMD [ "npm", "run", "start" ]
